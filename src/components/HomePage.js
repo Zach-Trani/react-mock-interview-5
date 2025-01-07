@@ -1,15 +1,18 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-const HomePage = () => {
+const HomePage = ({ setMove }) => {
     const [userInput, setUserInput] = useState('');
     const [pokemon, setPokemon] = useState('');
     const [loading, setLoading] = useState('');
   
+    const navigate = useNavigate();
+
     const getPokemon = async () => {
     try {
       const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${userInput}`);
-      console.log(response.data.results)
+      console.log('res: ', response.data)
       setPokemon(response.data);
       setLoading('')
     //   const filteredResponse = response.data.map(({ species, moves, weight }) => ({ species, moves, weight }));
@@ -32,7 +35,11 @@ const HomePage = () => {
     getPokemon();
   },[userInput])
 
-  console.log(userInput);
+  const handleClick = () => {
+    setMove(pokemon?.moves?.[0]?.move?.name);
+    navigate('/animation');
+  };
+
   return (
     <div>
       <div>Homepage</div>
@@ -45,7 +52,7 @@ const HomePage = () => {
       <div>{pokemon?.species?.name}</div>
       <div>{pokemon?.height}</div>
       <div>{pokemon?.weight}</div>
-      <div>{pokemon?.moves?.[0]?.move?.name}</div>
+      <a href="/animation" onClick={setMove(pokemon?.moves?.[0]?.move?.name)}>{pokemon?.moves?.[0]?.move?.name}</a>
       <div>{pokemon?.moves?.[1]?.move?.name}</div>
       <div>{pokemon?.moves?.[2]?.move?.name}</div>
     </div>
